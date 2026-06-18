@@ -1,7 +1,7 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
 
-app = Flask(__name__)
+app = Flask(_name_)
 
 # ডেটাবেজ টেবিল তৈরি করার ফাংশন
 def init_db():
@@ -17,6 +17,9 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
+
+# রেন্ডার সার্ভারে যাতে gunicorn রান হওয়ার সাথে সাথেই টেবিল তৈরি হয়
+init_db()
 
 # হোম পেজ (টপ-আপ ফর্ম)
 @app.route('/')
@@ -52,7 +55,6 @@ def admin():
     conn.close()
     return render_template('admin.html', orders=orders)
 
-# মেইন ফাংশন (সার্ভার রান করার অংশ)
-if __name__ == '__main__':
-    init_db()
+# মেইন ফাংশন (লোকাল পিসিতে রান করার জন্য)
+if _name_ == '_main_':
     app.run(debug=True)
