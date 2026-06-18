@@ -1,7 +1,7 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # ডেটাবেজ টেবিল তৈরি করার ফাংশন
 def init_db():
@@ -56,5 +56,5 @@ def admin():
     return render_template('admin.html', orders=orders)
 
 # মেইন ফাংশন (লোকাল পিসিতে রান করার জন্য)
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)
