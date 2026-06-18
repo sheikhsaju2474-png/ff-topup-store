@@ -50,6 +50,19 @@
 <body>
 
     <div class="container">
+        <!-- ORDER CONFIRM -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div style="background-color: #2ed573; color: white; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-weight: bold; font-size: 14px; box-shadow: 0 4px 10px rgba(46, 213, 115, 0.2);">
+                  {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+Compose
+Write to Sheikh Saju
+
         <!-- Back Arrow Header -->
         <div class="nav-header">
             <a href="/" class="back-btn">←</a>
