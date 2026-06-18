@@ -9,6 +9,11 @@
         body { background-color: #f5f6fa; padding: 15px; color: #333; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         
+        /* Back Navigation */
+        .nav-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .back-btn { font-size: 24px; text-decoration: none; color: #333; font-weight: bold; cursor: pointer; display: inline-block; padding: 5px; }
+        .nav-title { font-size: 18px; font-weight: bold; color: #222; }
+
         .game-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .game-header img { width: 70px; height: 70px; border-radius: 12px; }
         .game-header h2 { font-size: 20px; color: #222; }
@@ -24,7 +29,6 @@
         .package-card .details .diamonds { font-weight: bold; font-size: 14px; }
         .package-card .price { color: #8a2be2; font-weight: bold; font-size: 14px; background: #f0f3f6; padding: 4px 10px; border-radius: 20px; }
         
-        /* Selected State */
         .package-card.selected { border-color: #8a2be2; background-color: #f9f5ff; }
         .package-card.selected .price { background: #8a2be2; color: white; }
 
@@ -36,20 +40,25 @@
         .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .payment-card { border: 2px solid #e1e8ed; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; position: relative; }
         .payment-card input { position: absolute; opacity: 0; }
-        .payment-card img { height: 35px; margin-bottom: 5px; display: block; margin: 0 auto; }
         .payment-card span { font-size: 13px; font-weight: bold; display: block; margin-top: 5px; }
         .payment-card.selected { border-color: #2ed573; background-color: #f1fbf5; }
 
         /* Submit Button */
         .submit-btn { width: 100%; background: #8a2be2; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; margin-top: 25px; cursor: pointer; transition: 0.3s; }
-        .submit-btn:hover { background: #7a1fa2; }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- Back Arrow Header -->
+        <div class="nav-header">
+            <a href="/" class="back-btn">←</a>
+            <div class="nav-title">Back to Home</div>
+        </div>
+
+        <!-- Game Header -->
         <div class="game-header">
-            <img src="https://via.placeholder.com/100?text=FF" alt="Game Logo">
+            <img src="https://images.unsplash.com/photo-1589241062272-c0a000072dfa?q=80&w=400" alt="Game Logo">
             <div>
                 <h2>{{ game_name }}</h2>
                 <p style="color: #666; font-size: 13px;">Game / Top up</p>
@@ -57,10 +66,8 @@
         </div>
 
         <form action="/submit_order" method="POST">
-            
-            <div class="step-title">
-                <span class="step-number">1</span> Select Recharge
-            </div>
+            <!-- Step 1 -->
+            <div class="step-title"><span class="step-number">1</span> Select Recharge</div>
             <div class="package-grid">
                 <div class="package-card" onclick="selectPackage(this)">
                     <input type="radio" name="package" value="25 Diamond - 22 TK" required>
@@ -72,39 +79,26 @@
                     <div class="details"><span class="diamonds">💎 50 Diamond</span></div>
                     <div class="price">37 TK</div>
                 </div>
-                <div class="package-card" onclick="selectPackage(this)">
-                    <input type="radio" name="package" value="115 Diamond - 79 TK">
-                    <div class="details"><span class="diamonds">💎 115 Diamond</span></div>
-                    <div class="price">79 TK</div>
-                </div>
-                <div class="package-card" onclick="selectPackage(this)">
-                    <input type="radio" name="package" value="240 Diamond - 158 TK">
-                    <div class="details"><span class="diamonds">💎 240 Diamond</span></div>
-                    <div class="price">158 TK</div>
-                </div>
             </div>
 
-            <div class="step-title">
-                <span class="step-number">2</span> Account Info
-            </div>
-            <p style="font-size: 13px; color: #555; margin-bottom: 5px;">এখানে আইডি কোড দিন।</p>
-            <input type="text" name="uid" class="input-box" placeholder="যেমন: 284758392" required>
+            <!-- Step 2 -->
+            <div class="step-title"><span class="step-number">2</span> Account Info</div>
+            <input type="text" name="uid" class="input-box" placeholder="এখানে আইডি কোড দিন।" required>
 
-            <div class="step-title">
-                <span class="step-number">3</span> Payment Methods
-            </div>
+            <!-- Step 3 -->
+            <div class="step-title"><span class="step-number">3</span> Payment Methods</div>
             <div class="payment-grid">
                 <div class="payment-card" onclick="selectPayment(this)">
                     <input type="radio" name="payment" value="Wallet Pay" required>
                     <span>SHEIKH TOPUP ওয়ালেট</span>
                 </div>
                 <div class="payment-card" onclick="selectPayment(this)">
-                    <input type="radio" name="payment" value="Instant Pay (Bkash/Nagad)">
-                    <span>Instant Pay (বিকাশ/নগদ/রকেট)</span>
+                    <input type="radio" name="payment" value="Instant Pay">
+                    <span>Instant Pay (বিকাশ/নগদ)</span>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">Buy Now (Order Stream)</button>
+            <button type="submit" class="submit-btn">Buy Now</button>
         </form>
     </div>
 
