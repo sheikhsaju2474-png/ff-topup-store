@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy {{ game_name }} - OB TOPUP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f5f6fa; padding: 15px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        .game-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .game-header img { width: 70px; height: 70px; border-radius: 12px; }
+        .game-header h2 { font-size: 20px; color: #222; }
+
+        .step-title { font-size: 16px; font-weight: bold; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 10px; }
+        .step-number { background: #ff7f50; color: white; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 13px; }
+
+        /* Package Grid */
+        .package-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .package-card { border: 2px solid #e1e8ed; border-radius: 12px; padding: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
+        .package-card input { position: absolute; opacity: 0; }
+        .package-card .details { display: flex; flex-direction: column; }
+        .package-card .details .diamonds { font-weight: bold; font-size: 14px; }
+        .package-card .price { color: #8a2be2; font-weight: bold; font-size: 14px; background: #f0f3f6; padding: 4px 10px; border-radius: 20px; }
+        
+        /* Selected State */
+        .package-card.selected { border-color: #8a2be2; background-color: #f9f5ff; }
+        .package-card.selected .price { background: #8a2be2; color: white; }
+
+        /* Input ID */
+        .input-box { width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 10px; font-size: 14px; outline: none; margin-top: 5px; }
+        .input-box:focus { border-color: #8a2be2; }
+
+        /* Payment Methods */
+        .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .payment-card { border: 2px solid #e1e8ed; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; position: relative; }
+        .payment-card input { position: absolute; opacity: 0; }
+        .payment-card img { height: 35px; margin-bottom: 5px; display: block; margin: 0 auto; }
+        .payment-card span { font-size: 13px; font-weight: bold; display: block; margin-top: 5px; }
+        .payment-card.selected { border-color: #2ed573; background-color: #f1fbf5; }
+
+        /* Submit Button */
+        .submit-btn { width: 100%; background: #8a2be2; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; margin-top: 25px; cursor: pointer; transition: 0.3s; }
+        .submit-btn:hover { background: #7a1fa2; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="game-header">
+            <img src="https://via.placeholder.com/100?text=FF" alt="Game Logo">
+            <div>
+                <h2>{{ game_name }}</h2>
+                <p style="color: #666; font-size: 13px;">Game / Top up</p>
+            </div>
+        </div>
+
+        <form action="/submit_order" method="POST">
+            
+            <div class="step-title">
+                <span class="step-number">1</span> Select Recharge
+            </div>
+            <div class="package-grid">
+                <div class="package-card" onclick="selectPackage(this)">
+                    <input type="radio" name="package" value="25 Diamond - 22 TK" required>
+                    <div class="details"><span class="diamonds">💎 25 Diamond</span></div>
+                    <div class="price">22 TK</div>
+                </div>
+                <div class="package-card" onclick="selectPackage(this)">
+                    <input type="radio" name="package" value="50 Diamond - 37 TK">
+                    <div class="details"><span class="diamonds">💎 50 Diamond</span></div>
+                    <div class="price">37 TK</div>
+                </div>
+                <div class="package-card" onclick="selectPackage(this)">
+                    <input type="radio" name="package" value="115 Diamond - 79 TK">
+                    <div class="details"><span class="diamonds">💎 115 Diamond</span></div>
+                    <div class="price">79 TK</div>
+                </div>
+                <div class="package-card" onclick="selectPackage(this)">
+                    <input type="radio" name="package" value="240 Diamond - 158 TK">
+                    <div class="details"><span class="diamonds">💎 240 Diamond</span></div>
+                    <div class="price">158 TK</div>
+                </div>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">2</span> Account Info
+            </div>
+            <p style="font-size: 13px; color: #555; margin-bottom: 5px;">এখানে আইডি কোড দিন।</p>
+            <input type="text" name="uid" class="input-box" placeholder="যেমন: 284758392" required>
+
+            <div class="step-title">
+                <span class="step-number">3</span> Payment Methods
+            </div>
+            <div class="payment-grid">
+                <div class="payment-card" onclick="selectPayment(this)">
+                    <input type="radio" name="payment" value="Wallet Pay" required>
+                    <span>OB TOPUP ওয়ালেট</span>
+                </div>
+                <div class="payment-card" onclick="selectPayment(this)">
+                    <input type="radio" name="payment" value="Instant Pay (Bkash/Nagad)">
+                    <span>Instant Pay (বিকাশ/নগদ/রকেট)</span>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Buy Now (Order Stream)</button>
+        </form>
+    </div>
+
+    <script>
+        function selectPackage(element) {
+            document.querySelectorAll('.package-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            element.querySelector('input').checked = true;
+        }
+        function selectPayment(element) {
+            document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            element.querySelector('input').checked = true;
+        }
+    </script>
+</body>
+</html>
