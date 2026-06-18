@@ -3,78 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy {{ game_name }} - SHEIKH TOPUP</title>
+    <title>Buy {{ game_name }} - OB TOPUP</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: #f5f6fa; padding: 15px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .container { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         
         /* Back Navigation */
-        .nav-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .back-btn { font-size: 24px; text-decoration: none; color: #333; font-weight: bold; cursor: pointer; display: inline-block; padding: 5px; }
-        .nav-title { font-size: 18px; font-weight: bold; color: #222; }
+        .nav-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .back-btn { font-size: 26px; text-decoration: none; color: #333; font-weight: bold; cursor: pointer; display: inline-block; padding: 0 5px; }
+        .nav-title { font-size: 16px; font-weight: bold; color: #444; }
 
         .game-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        .game-header img { width: 70px; height: 70px; border-radius: 12px; }
-        .game-header h2 { font-size: 20px; color: #222; }
+        .game-header img { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; }
+        .game-header h2 { font-size: 18px; color: #222; }
 
-        .step-title { font-size: 16px; font-weight: bold; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 10px; }
-        .step-number { background: #ff7f50; color: white; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 13px; }
+        .step-title { font-size: 15px; font-weight: bold; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px; }
+        .step-number { background: #ff7f50; color: white; width: 22px; height: 22px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 12px; }
 
         /* Package Grid */
-        .package-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .package-card { border: 2px solid #e1e8ed; border-radius: 12px; padding: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
+        .package-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .package-card { border: 1px solid #e1e8ed; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; position: relative; background: #fff; }
         .package-card input { position: absolute; opacity: 0; }
-        .package-card .details { display: flex; flex-direction: column; }
-        .package-card .details .diamonds { font-weight: bold; font-size: 14px; }
-        .package-card .price { color: #8a2be2; font-weight: bold; font-size: 14px; background: #f0f3f6; padding: 4px 10px; border-radius: 20px; }
-        
+        .package-card .diamonds { font-weight: bold; font-size: 13px; color: #444; }
+        .package-card .price { color: #8a2be2; font-weight: bold; font-size: 13px; background: #f0f3f6; padding: 3px 8px; border-radius: 20px; }
         .package-card.selected { border-color: #8a2be2; background-color: #f9f5ff; }
         .package-card.selected .price { background: #8a2be2; color: white; }
 
-        /* Input ID */
-        .input-box { width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 10px; font-size: 14px; outline: none; margin-top: 5px; }
-        .input-box:focus { border-color: #8a2be2; }
+        /* Input Styles */
+        .input-box { width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px; outline: none; margin-top: 5px; background: #fafafa; }
+        .input-box:focus { border-color: #8a2be2; background: #fff; }
 
-        /* Payment Methods */
+        /* Payment Grid */
         .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .payment-card { border: 2px solid #e1e8ed; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; position: relative; }
+        .payment-card { border: 1px solid #e1e8ed; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; position: relative; background: #fff; }
         .payment-card input { position: absolute; opacity: 0; }
-        .payment-card span { font-size: 13px; font-weight: bold; display: block; margin-top: 5px; }
-        .payment-card.selected { border-color: #2ed573; background-color: #f1fbf5; }
+        .payment-card span { font-size: 14px; font-weight: bold; display: block; margin-top: 5px; color: #333; }
+        .payment-card.selected { border-color: #8a2be2; background-color: #f9f5ff; }
 
-        /* Submit Button */
-        .submit-btn { width: 100%; background: #8a2be2; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; margin-top: 25px; cursor: pointer; transition: 0.3s; }
+        /* Dynamic Gateway Interface */
+        .payment-details-box { display: none; background: #f8f9fa; border: 1px dashed #8a2be2; border-radius: 10px; padding: 15px; margin-top: 15px; animation: fadeIn 0.3s ease-in-out; }
+        .payment-instruction { font-size: 13px; color: #555; margin-bottom: 10px; line-height: 1.5; }
+        .payment-number { font-size: 16px; font-weight: bold; color: #ff4757; background: #fff; padding: 8px; border-radius: 6px; display: inline-block; border: 1px solid #eedede; margin-bottom: 10px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .submit-btn { width: 100%; background: #9400d3; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; margin-top: 25px; cursor: pointer; transition: 0.3s; }
+        .submit-btn:hover { background: #8a2be2; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- ORDER CONFIRM -->
+        <div class="nav-header">
+            <a href="/" class="back-btn">←</a>
+            <div class="nav-title">{{ game_name }} - টপ আপ পেজ</div>
+        </div>
+
+        <!-- Success Flash Message -->
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
-              <div style="background-color: #2ed573; color: white; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-weight: bold; font-size: 14px; box-shadow: 0 4px 10px rgba(46, 213, 115, 0.2);">
+              <div style="background-color: #2ed573; color: white; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-weight: bold; font-size: 14px;">
                   {{ message }}
               </div>
             {% endfor %}
           {% endif %}
         {% endwith %}
-Compose
-Write to Sheikh Saju
 
-        <!-- Back Arrow Header -->
-        <div class="nav-header">
-            <a href="/" class="back-btn">←</a>
-            <div class="nav-title">Back to Home</div>
-        </div>
-
-        <!-- Game Header -->
         <div class="game-header">
-            <img src="https://images.unsplash.com/photo-1589241062272-c0a000072dfa?q=80&w=400" alt="Game Logo">
+            <img src="https://images.unsplash.com/photo-1589241062272-c0a000072dfa?q=80&w=400" alt="Game Icon">
             <div>
                 <h2>{{ game_name }}</h2>
-                <p style="color: #666; font-size: 13px;">Game / Top up</p>
+                <p style="color: #666; font-size: 12px;">Game / Top up</p>
             </div>
         </div>
 
@@ -82,16 +86,10 @@ Write to Sheikh Saju
             <!-- Step 1 -->
             <div class="step-title"><span class="step-number">1</span> Select Recharge</div>
             <div class="package-grid">
-                <div class="package-card" onclick="selectPackage(this)">
-                    <input type="radio" name="package" value="25 Diamond - 22 TK" required>
-                    <div class="details"><span class="diamonds">💎 25 Diamond</span></div>
-                    <div class="price">22 TK</div>
-                </div>
-                <div class="package-card" onclick="selectPackage(this)">
-                    <input type="radio" name="package" value="50 Diamond - 37 TK">
-                    <div class="details"><span class="diamonds">💎 50 Diamond</span></div>
-                    <div class="price">37 TK</div>
-                </div>
+                <div class="package-card" onclick="selectPackage(this)"><input type="radio" name="package" value="25 Diamond - 22 TK" required><span class="diamonds">💎 25 Diamond</span><div class="price">22 TK</div></div>
+                <div class="package-card" onclick="selectPackage(this)"><input type="radio" name="package" value="50 Diamond - 37 TK"><span class="diamonds">💎 50 Diamond</span><div class="price">37 TK</div></div>
+                <div class="package-card" onclick="selectPackage(this)"><input type="radio" name="package" value="115 Diamond - 79 TK"><span class="diamonds">💎 115 Diamond</span><div class="price">79 TK</div></div>
+                <div class="package-card" onclick="selectPackage(this)"><input type="radio" name="package" value="240 Diamond - 158 TK"><span class="diamonds">💎 240 Diamond</span><div class="price">158 TK</div></div>
             </div>
 
             <!-- Step 2 -->
@@ -101,14 +99,29 @@ Write to Sheikh Saju
             <!-- Step 3 -->
             <div class="step-title"><span class="step-number">3</span> Payment Methods</div>
             <div class="payment-grid">
-                <div class="payment-card" onclick="selectPayment(this)">
-                    <input type="radio" name="payment" value="Wallet Pay" required>
-                    <span>SHEIKH TOPUP ওয়ালেট</span>
+                <div class="payment-card" onclick="selectPayment(this, 'bkash')">
+                    <input type="radio" name="payment" value="bKash" required>
+                    <span>bKash (বিকাশ)</span>
                 </div>
-                <div class="payment-card" onclick="selectPayment(this)">
-                    <input type="radio" name="payment" value="Instant Pay">
-                    <span>Instant Pay (বিকাশ/নগদ)</span>
+                <div class="payment-card" onclick="selectPayment(this, 'nagad')">
+                    <input type="radio" name="payment" value="Nagad">
+                    <span>Nagad (নগদ)</span>
                 </div>
+            </div>
+
+            <!-- ছোট ইন্টারফেজ (বিকাশ এবং নগদ আলাদা সিলেক্টের পর পপ-আপ হবে) -->
+            <div id="bkash-box" class="payment-details-box">
+                <div class="payment-instruction">👉 নিচে দেওয়া <b>বিকাশ পার্সোনাল</b> নাম্বারে টাকা <b>Send Money</b> করুন:</div>
+                <div class="payment-number">017XXXXXXXX (বিকাশ)</div> <!-- আপনার পার্সোনাল বিকাশ নাম্বার এখানে দিন -->
+                <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">Transaction ID (TxID) দিন:</p>
+                <input type="text" name="txid" id="bkash-txid" class="input-box" placeholder="যেমন: BKA87HJK92">
+            </div>
+
+            <div id="nagad-box" class="payment-details-box">
+                <div class="payment-instruction">👉 নিচে দেওয়া <b>নগদ পার্সোনাল</b> নাম্বারে টাকা <b>Send Money</b> করুন:</div>
+                <div class="payment-number">019XXXXXXXX (নগদ)</div> <!-- আপনার পার্সোনাল নগদ নাম্বার এখানে দিন -->
+                <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">Transaction ID (TxID) দিন:</p>
+                <input type="text" name="txid" id="nagad-txid" class="input-box" placeholder="যেমন: 7N82KSJDUW">
             </div>
 
             <button type="submit" class="submit-btn">Buy Now</button>
@@ -121,11 +134,29 @@ Write to Sheikh Saju
             element.classList.add('selected');
             element.querySelector('input').checked = true;
         }
-        function selectPayment(element) {
+
+        function selectPayment(element, method) {
+            // পেমেন্ট কার্ড সিলেক্ট ইফেক্ট
             document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
             element.classList.add('selected');
             element.querySelector('input').checked = true;
+
+            // ইন্টারফেজ বক্স হাইড/শো করার লজিক
+            document.getElementById('bkash-box').style.display = 'none';
+            document.getElementById('nagad-box').style.display = 'none';
+            document.getElementById('bkash-txid').required = false;
+            document.getElementById('nagad-txid').required = false;
+
+            if (method === 'bkash') {
+                document.getElementById('bkash-box').style.display = 'block';
+                document.getElementById('bkash-txid').required = true; // TxID দেওয়া বাধ্যতামূলক করা হলো
+            } else if (method === 'nagad') {
+                document.getElementById('nagad-box').style.display = 'block';
+                document.getElementById('nagad-txid').required = true; // TxID দেওয়া বাধ্যতামূলক করা হলো
+            }
         }
     </script>
 </body>
 </html>
+Compose
+Write to Sheikh Saju
