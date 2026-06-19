@@ -1,47 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Admin Panel</title>
+    <meta charset="UTF-8"><title>SHEIKH TOPUP - Admin Panel</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background: #f4f7f6; }
         .box { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        input, select { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; display: block; }
+        input, select { padding: 10px; margin: 5px 0; width: 100%; max-width: 400px; display: block; }
         button { padding: 10px 20px; background: #8a2be2; color: white; border: none; cursor: pointer; border-radius: 50px; font-weight: bold;}
-        table { width: 100%; border-collapse: collapse; background: white; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
         th, td { padding: 12px; border: 1px solid #eee; text-align: left; }
         th { background: #8a2be2; color: white; }
     </style>
 </head>
 <body>
-    <h1>Sheikh Topup Admin Dashboard</h1>
+    <h1>SHEIKH TOPUP Admin Dashboard</h1>
 
     <div class="box">
-        <h2>➕ নতুন ঘর বা অফার যোগ করুন (Add New Item)</h2>
+        <h2>➕ নতুন গেম বা অফারের ঘর যোগ করুন (Add New Game Grid)</h2>
         <form method="POST">
             <input type="hidden" name="action" value="add_product">
-            <input type="text" name="name" placeholder="গেম বা অফারের নাম (যেমন: Garena Shell)" required>
+            <input type="text" name="name" placeholder="যেমন: FREE FIRE (UID) বা Garena Shell" required>
             <select name="category">
                 <option value="Offer">Offer ক্যাটাগরি</option>
                 <option value="Free Fire">Free Fire ক্যাটাগরি</option>
             </select>
-            <input type="text" name="image_url" placeholder="Imgbb বা অনলাইন ছবির ডিরেক্ট লিংক" required>
+            <input type="text" name="image_url" placeholder="অনলাইন ছবির ডিরেক্ট লিংক" required>
             <button type="submit">যোগ করুন (Add Item)</button>
         </form>
     </div>
 
     <div class="box">
-        <h2>📋 বর্তমান ঘরসমূহ (Current Grid Items)</h2>
+        <h2>💎 ডায়মন্ড প্যাকেজ ও দাম সেট করুন (Add Diamond/Shell Package)</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="add_package">
+            <label>কোন গেমের জন্য প্যাকেজ তৈরি করবেন সিলেক্ট করুন:</label>
+            <select name="product_name" required>
+                {% for product in products %}
+                    <option value="{{ product[1] }}">{{ product[1] }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="package_name" placeholder="প্যাকেজের নাম (যেমন: 115 Diamond বা Weekly)" required>
+            <input type="text" name="price" placeholder="দাম কত টাকা? (যেমন: 79)" required>
+            <button type="submit" style="background: #2ed573;">প্যাকেজ সেভ করুন</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <h2>📋 বর্তমান গেমের ঘরসমূহ (Current Grid Items)</h2>
         <table>
             <tr><th>ID</th><th>নাম</th><th>ক্যাটাগরি</th><th>অ্যাকশন</th></tr>
             {% for product in products %}
             <tr>
-                <td>{{ product[0] }}</td>
-                <td>{{ product[1] }}</td>
-                <td>{{ product[2] }}</td>
+                <td>{{ product[0] }}</td><td>{{ product[1] }}</td><td>{{ product[2] }}</td>
                 <td>
                     <form method="POST" style="display:inline;">
                         <input type="hidden" name="action" value="delete_product">
                         <input type="hidden" name="product_id" value="{{ product[0] }}">
+                        <button type="submit" style="background:#ff4757; padding: 5px 10px;">ডিলিট</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="box">
+        <h2>📋 বর্তমান ডায়মন্ড প্যাকেজসমূহ (Current Active Packages)</h2>
+        <table>
+            <tr><th>গেমের নাম</th><th>প্যাকেজ</th><th>দাম (টাকা)</th><th>অ্যাকশন</th></tr>
+            {% for pkg in packages %}
+            <tr>
+                <td><b>{{ pkg[1] }}</b></td><td>{{ pkg[2] }}</td><td>{{ pkg[3] }} TK</td>
+                <td>
+                    <form method="POST" style="display:inline;">
+                        <input type="hidden" name="action" value="delete_package">
+                        <input type="hidden" name="package_id" value="{{ pkg[0] }}">
                         <button type="submit" style="background:#ff4757; padding: 5px 10px;">ডিলিট</button>
                     </form>
                 </td>
@@ -56,15 +89,12 @@
             <tr><th>ID</th><th>UID</th><th>প্যাকেজ</th><th>পেমেন্ট</th><th>TxID</th><th>স্ট্যাটাস</th></tr>
             {% for order in orders %}
             <tr>
-                <td>{{ order[0] }}</td>
-                <td>{{ order[1] }}</td>
-                <td>{{ order[2] }}</td>
-                <td>{{ order[3] }}</td>
-                <td><b>{{ order[4] }}</b></td>
-                <td><span style="color:red; font-weight:bold;">{{ order[5] }}</span></td>
+                <td>{{ order[0] }}</td><td>{{ order[1] }}</td><td>{{ order[2] }}</td><td>{{ order[3] }}</td><td><b>{{ order[4] }}</b></td><td><span style="color:red; font-weight:bold;">{{ order[5] }}</span></td>
             </tr>
             {% endfor %}
         </table>
     </div>
 </body>
 </html>
+Compose
+Write to Sheikh Saju
