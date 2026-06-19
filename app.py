@@ -124,8 +124,23 @@ def submit_order():
         flash('আপনার অর্ডারটি সফলভাবে জমা হয়েছে!', 'success')
         return redirect(url_for('index'))
 
+# 🎯 আপনার অ্যাডমিন প্যানেলের সিক্রেট পাসওয়ার্ড
+ADMIN_PASSWORD = "Saju@Admin#2026"
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
+    # 🔒 ১. প্রথমবার ঢুকলে বা লগআউট থাকলে পাসওয়ার্ড ভেরিফিকেশন করবে
+    if not session.get('admin_logged_in'):
+        if request.method == 'POST' and request.form.get('admin_pass'):
+            entered_password = request.form.get('admin_pass')
+            if entered_password == ADMIN_PASSWORD:
+                session['admin_logged_in'] = True
+                return redirect('/admin')
+            else:
+                return render_template('admin_login.html', error="ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।")
+        return render_template('admin_login.html')
+
+    # 🔓 ২. পাসওয়ার্ড সঠিক হলে আপনার আগের নিচের কোডগুলো হুবহু রান হবে:
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
     if request.method == 'POST':
@@ -156,6 +171,14 @@ def admin():
     packages = cur.fetchall()
     conn.close()
     return render_template('admin.html', orders=orders, products=products, packages=packages)
+
+
+# 🚪 অ্যাডমিন প্যানেল থেকে বের হওয়ার জন্য লগআউট রুট (এটি ঠিক admin ফাংশনের নিচে বসবে)
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_logged_in', None)
+    return redirect('/')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
