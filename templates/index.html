@@ -6,72 +6,72 @@
     <title>SHEIKH TOPUP - পাইকারি দামে টপ আপ</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background-color: #f1f2f6; color: #333; padding-bottom: 80px; }
-        header { background: #fff; padding: 15px 4%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .logo-text h1 { font-size: 20px; color: #000; font-weight: 800; }
-        .logo-text p { font-size: 11px; color: #666; }
-        .auth-btns a { text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; margin-left: 5px; }
-        .login-btn { border: 1px solid #8a2be2; color: #8a2be2; }
-        .reg-btn { background: #8a2be2; color: white; }
-        .logout-btn { color: #ff4757; font-size: 13px; text-decoration: none; font-weight: bold; }
-        .section-title { text-align: center; margin: 25px 0 15px; font-size: 22px; font-weight: bold; }
+        body { background-color: #f5f6fa; padding-bottom: 60px; }
+        header { background: #fff; padding: 12px 4%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .logo-box { display: flex; align-items: center; gap: 10px; }
+        .logo-box img { width: 45px; height: 45px; border-radius: 50%; }
+        .logo-text h1 { font-size: 18px; color: #111; font-weight: bold; }
+        .logo-text p { font-size: 11px; color: #777; }
+        .auth-btns a { text-decoration: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-left: 5px; display: inline-block; }
+        .login-btn { background: #8a2be2; color: white; }
+        .reg-btn { background: #e0bfff; color: #8a2be2; }
+        
+        .promo-banner { width: 92%; margin: 15px auto; background: linear-gradient(135deg, #8a2be2, #4a00e0); padding: 20px; border-radius: 12px; color: white; text-align: center; }
+        
+        .section-title { width: 92%; margin: 25px auto 10px; font-size: 20px; font-weight: bold; color: #222; border-left: 4px solid #8a2be2; padding-left: 8px; }
         .grid-container { width: 92%; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 768px) { .grid-container { grid-template-columns: repeat(4, 1fr); } }
-        .game-card { background: white; border-radius: 12px; overflow: hidden; text-align: center; text-decoration: none; color: inherit; border: 1px solid #e6e6e6; }
-        .game-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
-        .game-title { padding: 10px; font-weight: bold; font-size: 13px; }
+        
+        .game-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e8e8e8; text-decoration: none; color: inherit; transition: 0.2s; display: flex; flex-direction: column; align-items: center; padding: 10px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .game-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .game-card img { width: 85%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin-bottom: 10px; background: #eee; }
+        .game-title { font-weight: bold; font-size: 13px; color: #333; min-height: 35px; display: flex; align-items: center; }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo-text">
-            <h1>SHEIKH TOPUP</h1>
-            <p>পাইকারি দামে টপ আপ</p>
+        <div class="logo-box">
+            <img src="https://i.ibb.co/X7P4pL4/ff-uid.png" alt="Logo">
+            <div class="logo-text"><h1>SHEIKH TOPUP</h1><p>পাইকারি দামে টপ আপ</p></div>
         </div>
-        
-        <!-- ইউজার লগইন থাকলে নাম দেখাবে, না থাকলে লগইন বাটন দেখাবে -->
         <div class="auth-btns">
             {% if session['username'] %}
-                <span style="font-size:13px; font-weight:bold; color:#555;">👤 {{ session['username'] }}</span> | 
-                <a href="/logout" class="logout-btn">Log Out</a>
+                <span style="font-size:13px; font-weight:bold;">👤 {{ session['username'] }}</span> | 
+                <a href="/logout" style="color:#ff4757; font-size:13px; text-decoration:none; font-weight:bold;">Log Out</a>
             {% else %}
-                <a href="/login" class="login-btn">Log In</a>
-                <a href="/signup" class="reg-btn">Sign Up</a>
+                <a href="/register" class="reg-btn">Register</a>
+                <a href="/login" class="login-btn">Login</a>
             {% endif %}
         </div>
     </header>
 
-    <!-- মেসেজ নোটিফিকেশন -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div style="background-color: #2ed573; color: white; padding: 10px; text-align: center; font-weight: bold; font-size: 14px;">
-              {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}{% for m in messages %}<div style="background:#2ed573; color:white; padding:12px; text-align:center; font-weight:bold;">{{ m }}</div>{% endfor %}{% endif %}
     {% endwith %}
 
-    <!-- Offer Category -->
+    <div class="promo-banner">
+        <h3>SHEIKH TOPUP-এ স্বাগতম</h3>
+        <p style="font-size:12px; opacity:0.9; margin-top:5px;">সবচেয়ে কম মূল্যে ডায়মন্ড ও অফার কিনুন মুহূর্তেই</p>
+    </div>
+
     <div class="section-title">Offer</div>
     <div class="grid-container">
         {% for product in products %}
             {% if product[2] == 'Offer' %}
             <a href="/buy/{{ product[1] }}" class="game-card">
-                <img src="{{ product[3] }}" alt="{{ product[1] }}">
+                <img src="{{ product[3] }}" onerror="this.src='https://placehold.co/150?text=SHEIKH+TOPUP'" alt="{{ product[1] }}">
                 <div class="game-title">{{ product[1] }}</div>
             </a>
             {% endif %}
         {% endfor %}
     </div>
 
-    <!-- Free Fire Category -->
     <div class="section-title">Free Fire</div>
     <div class="grid-container">
-        {% for product in products %}
+        {%     for product in products %}
             {% if product[2] == 'Free Fire' %}
             <a href="/buy/{{ product[1] }}" class="game-card">
-                <img src="{{ product[3] }}" alt="{{ product[1] }}">
+                <img src="{{ product[3] }}" onerror="this.src='https://placehold.co/150?text=SHEIKH+TOPUP'" alt="{{ product[1] }}">
                 <div class="game-title">{{ product[1] }}</div>
             </a>
             {% endif %}
