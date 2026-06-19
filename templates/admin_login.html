@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন ভেরিফিকেশন - SHEIKH TOPUP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background-color: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .lock-card { background: #1e293b; padding: 40px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 100%; max-width: 420px; text-align: center; border: 1px solid #334155; }
+        .lock-icon { font-size: 50px; margin-bottom: 15px; color: #f59e0b; }
+        .title { font-size: 20px; color: #f8fafc; font-weight: bold; margin-bottom: 8px; }
+        .subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 25px; }
+        .input-box { width: 100%; padding: 14px; border: 1px solid #475569; border-radius: 10px; margin-bottom: 15px; font-size: 15px; outline: none; background: #0f172a; color: white; text-align: center; letter-spacing: 2px; }
+        .input-box:focus { border-color: #38bdf8; }
+        .verify-btn { width: 100%; background: #0284c7; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .verify-btn:hover { background: #0369a1; }
+        .error-msg { color: #f87171; font-size: 13px; margin-bottom: 15px; font-weight: bold; }
+        .back-link { display: inline-block; margin-top: 20px; color: #94a3b8; text-decoration: none; font-size: 13px; }
+        .back-link:hover { color: #f8fafc; }
+    </style>
+</head>
+<body>
+
+    <div class="lock-card">
+        <div class="lock-icon">🔒</div>
+        <div class="title">অ্যাডমিন প্যানেল লকড</div>
+        <div class="subtitle">প্রবেশ করতে সিক্রেট অ্যাডমিন পাসওয়ার্ডটি দিন</div>
+        
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+        
+        <form action="/admin" method="POST">
+            <input type="password" name="admin_pass" class="input-box" placeholder="••••••••" required>
+            <button type="submit" class="verify-btn">🔓 ভেরিফাই করুন</button>
+        </form>
+        
+        <a href="/" class="back-link">← হোম পেজে ফিরে যান</a>
+    </div>
+
+</body>
+</html>
