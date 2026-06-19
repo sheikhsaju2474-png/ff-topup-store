@@ -5,35 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy {{ game_name }} - SHEIKH TOPUP</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #f5f6fa; padding: 15px; color: #333; }
-        .container { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .nav-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .back-btn { font-size: 26px; text-decoration: none; color: #333; font-weight: bold; cursor: pointer; }
-        .nav-title { font-size: 16px; font-weight: bold; color: #444; }
-        .game-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        .game-header img { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; }
-        .game-header h2 { font-size: 18px; color: #222; }
-        .step-title { font-size: 15px; font-weight: bold; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px; }
-        .step-number { background: #ff7f50; color: white; width: 22px; height: 22px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 12px; }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background-color: #f5f6fa; padding: 15px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .nav-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .back-btn { font-size: 28px; text-decoration: none; color: #8a2be2; font-weight: bold; cursor: pointer; }
+        .nav-title { font-size: 16px; font-weight: bold; color: #333; }
+        /* আগের সমস্ত ফর্ম স্টাইল অক্ষুণ্ণ রাখা হয়েছে */
+        .step-title { font-size: 15px; font-weight: bold; margin: 15px 0 10px; color: #444; }
         .package-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .package-card { border: 1px solid #e1e8ed; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; }
-        .package-card input { position: absolute; opacity: 0; }
-        .package-card .diamonds { font-weight: bold; font-size: 13px; }
-        .package-card .price { color: #8a2be2; font-weight: bold; font-size: 13px; background: #f0f3f6; padding: 3px 8px; border-radius: 20px; }
+        .package-card { border: 1px solid #ddd; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; cursor: pointer; background: #fff; }
         .package-card.selected { border-color: #8a2be2; background-color: #f9f5ff; }
-        .package-card.selected .price { background: #8a2be2; color: white; }
-        
-        .input-box { width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px; outline: none; margin-top: 5px; background: #fafafa; }
-        .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .payment-card { border: 1px solid #e1e8ed; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; background: #fff; position: relative; }
-        .payment-card input { position: absolute; opacity: 0; }
-        .payment-card span { font-size: 14px; font-weight: bold; display: block; margin-top: 5px; }
-        .payment-card.selected { border-color: #8a2be2; background-color: #f9f5ff; }
-        .payment-details-box { display: none; background: #f8f9fa; border: 1px dashed #8a2be2; border-radius: 10px; padding: 15px; margin-top: 15px; }
-        .payment-number { font-size: 16px; font-weight: bold; color: #ff4757; background: #fff; padding: 8px; border-radius: 6px; display: inline-block; border: 1px solid #eedede; margin-bottom: 10px; }
-        .submit-btn { width: 100%; background: #9400d3; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; margin-top: 25px; cursor: pointer; }
+        .input-box { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px; }
+        .submit-btn { width: 100%; background: #8a2be2; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -43,78 +27,42 @@
             <div class="nav-title">{{ game_name }} - SHEIKH TOPUP</div>
         </div>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div style="background-color: #2ed573; color: white; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-weight: bold;">
-                  {{ message }}
-              </div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-
         <form action="/submit_order" method="POST">
-            <div class="step-title"><span class="step-number">1</span> Select Recharge</div>
+            <div class="step-title">Select Package</div>
             <div class="package-grid">
                 {% if packages %}
                     {% for pkg in packages %}
                     <div class="package-card" onclick="selectPackage(this)">
-                        <input type="radio" name="package" value="{{ pkg[2] }} - {{ pkg[3] }} TK" required>
-                        <span class="diamonds">💎 {{ pkg[2] }}</span>
-                        <div class="price">{{ pkg[3] }} TK</div>
+                        <input type="radio" name="package" value="{{ pkg[2] }} - {{ pkg[3] }} TK" style="display:none;" required>
+                        <span>💎 {{ pkg[2] }}</span>
+                        <b style="color:#8a2be2;">{{ pkg[3] }} TK</b>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <p style="color: red; font-size: 13px; padding: 10px;">এই গেমের জন্য এখনো কোনো প্যাকেজ তৈরি করা হয়নি। অ্যাডমিন প্যানেল থেকে যোগ করুন।</p>
+                    <p style="font-size:13px; color:#777;">অ্যাডমিন প্যানেল থেকে এই প্রোডাক্টের প্যাকেজ ও দাম এড করুন।</p>
                 {% endif %}
             </div>
 
-            <div class="step-title"><span class="step-number">2</span> Account Info</div>
-            <input type="text" name="uid" class="input-box" placeholder="এখানে আইডি কোড দিন।" required>
+            <div class="step-title">Player ID Code</div>
+            <input type="text" name="uid" class="input-box" placeholder="Enter Player UID" required>
 
-            <div class="step-title"><span class="step-number">3</span> Payment Methods</div>
-            <div class="payment-grid">
-                <div class="payment-card" onclick="selectPayment(this, 'bkash')"><input type="radio" name="payment" value="bKash" required><span>bKash (বিকাশ)</span></div>
-                <div class="payment-card" onclick="selectPayment(this, 'nagad')"><input type="radio" name="payment" value="Nagad"><span>Nagad (নগদ)</span></div>
-            </div>
+            <div class="step-title">Payment Method</div>
+            <select name="payment" class="input-box" required>
+                <option value="bKash">bKash (বিকাশ)</option>
+                <option value="Nagad">Nagad (নগদ)</option>
+            </select>
 
-            <div id="bkash-box" class="payment-details-box">
-                <div style="font-size:13px; margin-bottom:10px;">👉 নিচে দেওয়া <b>বিকাশ পার্সোনাল</b> নাম্বারে টাকা <b>Send Money</b> করুন:</div>
-                <div class="payment-number">01994573379 (বিকাশ)</div>
-                <p style="font-size: 13px; font-weight: bold;">Transaction ID (TxID) দিন:</p>
-                <input type="text" name="txid" id="bkash-txid" class="input-box" placeholder="যেমন: BKA87HJK92">
-            </div>
+            <input type="text" name="txid" class="input-box" placeholder="Transaction ID (TxID)">
 
-            <div id="nagad-box" class="payment-details-box">
-                <div style="font-size:13px; margin-bottom:10px;">👉 নিচে দেওয়া <b>নগদ পার্সোনাল</b> নাম্বারে টাকা <b>Send Money</b> করুন:</div>
-                <div class="payment-number">01994573379 (নগদ)</div>
-                <p style="font-size: 13px; font-weight: bold;">Transaction ID (TxID) din:</p>
-                <input type="text" name="txid" id="nagad-txid" class="input-box" placeholder="যেমন: 7N82KSJDUW">
-            </div>
-
-            <button type="submit" class="submit-btn">Buy Now</button>
+            <button type="submit" class="submit-btn">Submit Order</button>
         </form>
     </div>
-
     <script>
-        function selectPackage(element) {
-            document.querySelectorAll('.package-grid .package-card').forEach(card => card.classList.remove('selected'));
-            element.classList.add('selected');
-            element.querySelector('input').checked = true;
-        }
-        function selectPayment(element, method) {
-            document.querySelectorAll('.payment-grid .payment-card').forEach(card => card.classList.remove('selected'));
-            element.classList.add('selected');
-            element.querySelector('input').checked = true;
-            document.getElementById('bkash-box').style.display = 'none';
-            document.getElementById('nagad-box').style.display = 'none';
-            document.getElementById('bkash-txid').required = false;
-            document.getElementById('nagad-txid').required = false;
-            if (method === 'bkash') { document.getElementById('bkash-box').style.display = 'block'; document.getElementById('bkash-txid').required = true; }
-            else if (method === 'nagad') { document.getElementById('nagad-box').style.display = 'block'; document.getElementById('nagad-txid').required = true; }
+        function selectPackage(el) {
+            document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            el.querySelector('input').checked = true;
         }
     </script>
 </body>
 </html>
-Compose
-Write to Sheikh Saju
