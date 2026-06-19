@@ -1,29 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8"><title>Log In - SHEIKH TOPUP</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লগইন করুন - SHEIKH TOPUP</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f5f6fa; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 350px; }
-        h2 { text-align: center; color: #8a2be2; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #8a2be2; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        p { font-size: 12px; text-align: center; color: #666; margin-top: 15px; }
-        a { color: #8a2be2; text-decoration: none; font-weight: bold; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f6fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        /* 🎯 ফর্মের মেইন বক্সটি বড় করা হয়েছে (max-width: 480px এবং প্যাডিং বাড়ানো হয়েছে) */
+        .auth-card { background: white; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(138, 43, 226, 0.1); width: 100%; max-width: 480px; position: relative; border: 1px solid #eaeaea; }
+        
+        /* 🔙 ব্যাক বাটন */
+        .back-to-home { position: absolute; top: 22px; left: 25px; font-size: 26px; text-decoration: none; color: #8a2be2; font-weight: bold; line-height: 1; transition: 0.2s; }
+        .back-to-home:hover { transform: translateX(-3px); }
+        
+        /* টাইটেল বড় করা হয়েছে */
+        .auth-title { text-align: center; margin-bottom: 25px; font-size: 22px; font-weight: bold; color: #8a2be2; margin-top: 5px; }
+        
+        /* 🎯 ইনপুট বক্সগুলো বড় এবং ফন্ট সাইজ উন্নত করা হয়েছে */
+        .input-box { width: 100%; padding: 14px 16px; border: 1px solid #ccc; border-radius: 10px; margin-bottom: 16px; font-size: 15px; outline: none; transition: 0.2s; background: #fafafa; }
+        .input-box:focus { border-color: #8a2be2; background: #fff; box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.15); }
+        
+        /* বাটন বড় ও প্রিমিয়াম করা হয়েছে */
+        .submit-btn { width: 100%; background: #8a2be2; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(138, 43, 226, 0.2); }
+        .submit-btn:hover { background: #701fc4; transform: translateY(-1px); }
+        
+        .switch-text { text-align: center; margin-top: 20px; font-size: 14px; color: #555; }
+        .switch-text a { color: #8a2be2; text-decoration: none; font-weight: bold; }
+        .switch-text a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>SHEIKH TOPUP লগইন</h2>
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}{% for m in messages %}<p style="color:red; font-weight:bold;">{{ m }}</p>{% endfor %}{% endif %}
-        {% endwith %}
-        <form method="POST">
-            <input type="text" name="username" placeholder="ইউজারনেম দিন" required>
-            <input type="password" name="password" placeholder="পাসওয়ার্ড দিন" required>
-            <button type="submit">প্রবেশ করুন (Log In)</button>
+
+    <div class="auth-card">
+        <a href="/" class="back-to-home">←</a>
+        <div class="auth-title">অ্যাকাউন্টে লগইন করুন</div>
+        
+        <form action="/login" method="POST">
+            <input type="text" name="username" class="input-box" placeholder="আপনার ইউজারনেম" required>
+            <input type="password" name="password" class="input-box" placeholder="আপনার পাসওয়ার্ড" required>
+            <button type="submit" class="submit-btn">লগইন করুন</button>
         </form>
-        <p>নতুন অ্যাকাউন্ট খুলতে চান? <a href="/register">Sign Up করুন</a></p>
+        
+        <div class="switch-text">
+            অ্যাকাউন্ট নেই? <a href="/register">এখানে তৈরি করুন</a>
+        </div>
     </div>
+
 </body>
 </html>
