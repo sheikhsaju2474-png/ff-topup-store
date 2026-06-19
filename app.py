@@ -74,7 +74,7 @@ def register():
             return redirect(url_for('login'))
         except sqlite3.IntegrityError:
             flash('এই ইউজারনেম বা ইমেইলটি ইতিমধ্যে নিবন্ধিত!', 'error')
-    return render_template('register.html')
+    return render_template('signup.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
