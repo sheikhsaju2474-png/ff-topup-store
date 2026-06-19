@@ -18,7 +18,7 @@
         {% with messages = get_flashed_messages() %}
           {% if messages %}{% for m in messages %}<p style="color:red; font-weight:bold;">{{ m }}</p>{% endfor %}{% endif %}
         {% endwith %}
-        <form method="POST">
+        <form action="/register" method="POST">
             <input type="text" name="username" placeholder="একটি ইউনিক ইউজারনেম" required>
             <input type="email" name="email" placeholder="আপনার ইমেইল এড্রেস" required>
             <input type="password" name="password" placeholder="একটি স্ট্রং পাসওয়ার্ড" required>
