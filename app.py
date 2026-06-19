@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
+from werkzeug.security import generate_password_hash, check_password_hash # নিরাপত্তার জন্য
 
 app = Flask(__name__)
-app.secret_key = "sheikh_topup_secret_key_123"
+app.secret_key = "sheikh_topup_super_secure_key_2026" # সেশন সুরক্ষার জন্য শক্তিশালী কি
 
 DB_FILE = 'orders.db'
 
@@ -13,6 +14,7 @@ def init_db():
     cur.execute('''
         CREATE TABLE IF NOT EXISTS orders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
             uid TEXT NOT NULL,
             package TEXT NOT NULL,
             payment TEXT NOT NULL,
@@ -29,7 +31,7 @@ def init_db():
             image_url TEXT NOT NULL
         )
     ''')
-    # ৩. ডায়মন্ড প্যাকেজ টেবিল (নতুন)
+    # ৩. ডায়মন্ড প্যাকেজ টেবিল
     cur.execute('''
         CREATE TABLE IF NOT EXISTS packages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,10 +40,76 @@ def init_db():
             price TEXT NOT NULL
         )
     ''')
+    # ৪. ইউজার/কাস্টমার টেবিল (নিরাপদ পাসওয়ার্ড হ্যাশসহ)
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
+    ''')
     conn.commit()
     conn.close()
 
 init_db()
+
+# --- ইউজার রেজিস্ট্রেশন ও লগইন লজিক ---
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get('username').strip()
+        email = request.form.get('email').strip()
+        password = request.form.get('password')
+        
+        # পাসওয়ার্ড সুরক্ষিতভাবে হ্যাশ করা হচ্ছে (নিরাপত্তা ১00%)
+        hashed_password = generate_password_hash(password, method='scrypt')
+        
+        try:
+            conn = sqlite3.connect(DB_FILE)
+            cur = conn.cursor()
+            cur.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", 
+                        (username, email, hashed_password))
+            conn.commit()
+            conn.close()
+            flash('রেজিস্ট্রেশন সফল হয়েছে! এখন লগইন করুন।', 'success')
+            return redirect(url_for('login'))
+        except sqlite3.IntegrityError:
+            flash('এই ইউজারনেম বা ইমেইল ইতিমধ্যে ব্যবহার করা হয়েছে!', 'error')
+            
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username').strip()
+        password = request.form.get('password')
+        
+        conn = sqlite3.connect(DB_FILE)
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE username=?", (username,))
+        user = cur.fetchone()
+        conn.close()
+        
+        # ডাটাবেজের হ্যাশ করা পাসওয়ার্ডের সাথে ইউজারের দেওয়া পাসওয়ার্ড মেলানো হচ্ছে
+        if user and check_password_hash(user[3], password):
+            session['user_id'] = user[0]
+            session['username'] = user[1]
+            flash(f'স্বাগতম, {user[1]}!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('সঠিক ইউজারনেম বা পাসওয়ার্ড দিন!', 'error')
+            
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('আপনি সফলভাবে লগআউট করেছেন।', 'success')
+    return redirect(url_for('index'))
+
+# --- কোর ফাংশনসমূহ ---
 
 @app.route('/')
 def index():
@@ -52,9 +120,13 @@ def index():
     conn.close()
     return render_template('index.html', products=all_products)
 
-# কিনার পেজ - এখন এই গেমের জন্য তৈরি করা নির্দিষ্ট প্যাকেজগুলো লোড করবে
 @app.route('/buy/<game_name>')
 def buy(game_name):
+    # কেউ লগইন না করে কিনতে গেলে লগইন পেজে পাঠিয়ে দেবে
+    if 'username' not in session:
+        flash('অর্ডার করতে প্রথমে লগইন করুন!', 'error')
+        return redirect(url_for('login'))
+        
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
     cur.execute("SELECT * FROM packages WHERE product_name=?", (game_name,))
@@ -64,25 +136,29 @@ def buy(game_name):
 
 @app.route('/submit_order', methods=['POST'])
 def submit_order():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+        
     if request.method == 'POST':
         uid = request.form.get('uid')
         package = request.form.get('package')
         payment = request.form.get('payment')
         txid = request.form.get('txid', '')
+        username = session['username'] # অর্ডার কার আইডি থেকে আসছে তা ট্র্যাকিং
 
         try:
             conn = sqlite3.connect(DB_FILE)
             cur = conn.cursor()
-            cur.execute("INSERT INTO orders (uid, package, payment, txid) VALUES (?, ?, ?, ?)",
-                        (uid, package, payment, txid))
+            cur.execute("INSERT INTO orders (username, uid, package, payment, txid) VALUES (?, ?, ?, ?, ?)",
+                        (username, uid, package, payment, txid))
             conn.commit()
             conn.close()
             flash('আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে! ধন্যবাদ।', 'success')
         except:
             flash('সমস্যা হয়েছে, আবার চেষ্টা করুন।', 'error')
-        return redirect(request.referrer or url_for('index'))
+        return redirect(url_for('index'))
 
-# অ্যাডমিন প্যানেল - ঘর এবং ডায়মন্ড প্যাকেজ দুইটাই কন্ট্রোল করার জন্য
+# অ্যাডমিন প্যানেল (পূর্বের ন্যায় ডাইনামিক)
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     conn = sqlite3.connect(DB_FILE)
@@ -90,30 +166,22 @@ def admin():
 
     if request.method == 'POST':
         action = request.form.get('action')
-        
-        # ঘর যোগ করা
         if action == 'add_product':
             name = request.form.get('name')
             category = request.form.get('category')
             image_url = request.form.get('image_url')
             cur.execute("INSERT INTO products (name, category, image_url) VALUES (?, ?, ?)", (name, category, image_url))
             conn.commit()
-            
-        # ঘর ডিলিট করা
         elif action == 'delete_product':
             p_id = request.form.get('product_id')
             cur.execute("DELETE FROM products WHERE id=?", (p_id,))
             conn.commit()
-            
-        # ডায়মন্ড প্যাকেজ যোগ করা (নতুন)
         elif action == 'add_package':
             product_name = request.form.get('product_name')
             package_name = request.form.get('package_name')
             price = request.form.get('price')
             cur.execute("INSERT INTO packages (product_name, package_name, price) VALUES (?, ?, ?)", (product_name, package_name, price))
             conn.commit()
-            
-        # ডায়মন্ড প্যাকেজ ডিলিট করা (নতুন)
         elif action == 'delete_package':
             pkg_id = request.form.get('package_id')
             cur.execute("DELETE FROM packages WHERE id=?", (pkg_id,))
